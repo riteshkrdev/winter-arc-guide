@@ -1,0 +1,239 @@
+<!-- Top Navigation Bar: Minimal & Clean (No extra statements) -->
+<header class="border-b border-slate-800 bg-slate-900/95 backdrop-blur sticky top-0 z-30 px-4 py-3 sm:px-8 shadow-lg">
+  <div class="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+    
+    <!-- Minimal Title: Just Winter Arc -->
+    <div class="flex items-center gap-2.5">
+      <span class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center font-black text-black text-base shadow-md shadow-orange-500/20">
+        ⚡
+      </span>
+      <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white uppercase select-none">
+        Winter Arc
+      </h1>
+    </div>
+
+    <!-- Dropdowns for Body Part & Portion Selection -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Body Part Dropdown -->
+      <div class="relative">
+        <select 
+          [ngModel]="workoutService.activeMuscle()" 
+          (ngModelChange)="switchMuscle($event)"
+          aria-label="Select Body Part"
+          class="appearance-none bg-slate-950 border border-amber-500/50 hover:border-amber-400 text-white font-bold text-xs sm:text-sm rounded-xl px-3.5 py-2 pr-9 shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400/40 cursor-pointer transition">
+          @for (opt of muscleOptions; track opt.id) {
+            <option [value]="opt.id" class="bg-slate-950 text-white py-1.5">
+              {{ opt.icon }} {{ opt.label }}
+            </option>
+          }
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-amber-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Target Portion Filter Dropdown -->
+      @if (workoutService.currentMuscleData(); as data) {
+        <div class="relative">
+          <select 
+            [ngModel]="workoutService.activePortion()" 
+            (ngModelChange)="filterPortion($event)"
+            aria-label="Filter Portion"
+            class="appearance-none bg-slate-950 border border-slate-700 hover:border-slate-500 text-slate-200 font-semibold text-xs sm:text-sm rounded-xl px-3 py-2 pr-8 shadow-md focus:outline-none focus:ring-2 focus:ring-amber-400/30 cursor-pointer transition">
+            @for (portion of data.portions; track portion.id) {
+              <option [value]="portion.id" class="bg-slate-950 text-slate-200 py-1">
+                {{ portion.label }}
+              </option>
+            }
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</header>
+
+<!-- Main Content Area: Fluid Layout -->
+<main class="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+  @if (workoutService.currentMuscleData(); as data) {
+
+    <!-- Day Overview Summary Bar -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 mb-6 flex flex-wrap items-center justify-between gap-4 shadow-md">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white flex items-center gap-2">
+          {{ data.title }}
+        </h2>
+        <span class="text-xs text-slate-400">Living Room & Pair of Dumbbells Protocol</span>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3 text-xs">
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-center">
+          <span class="text-amber-400 font-bold text-sm block">{{ data.stats.exercises }}</span>
+          <span class="text-slate-400 text-[10px] uppercase font-semibold">Exercises</span>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-center">
+          <span class="text-amber-400 font-bold text-sm block">{{ data.stats.totalSets }}</span>
+          <span class="text-slate-400 text-[10px] uppercase font-semibold">Total Sets</span>
+        </div>
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-center">
+          <span class="text-amber-400 font-bold text-sm block">{{ data.stats.time }}</span>
+          <span class="text-slate-400 text-[10px] uppercase font-semibold">Duration</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warmup Accordion Section with Real People Images -->
+    <details class="group bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 mb-6 shadow-sm transition" open>
+      <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span class="font-extrabold text-xs uppercase tracking-wider text-amber-400">{{ data.warmup.title }}</span>
+        </div>
+        <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-800">
+        @for (step of data.warmup.steps; track step.code) {
+          <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-3 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span class="w-5 h-5 rounded bg-amber-500/20 text-amber-400 text-[11px] flex items-center justify-center font-black">{{ step.code }}</span>
+                  {{ step.name }}
+                </span>
+                <span class="text-[11px] text-amber-400 font-mono font-bold">{{ step.time }}</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">{{ step.desc }}</p>
+            </div>
+            <!-- Real Person Warmup Photo -->
+            <div class="w-full h-32 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center mt-2.5">
+              <img [src]="step.img" [alt]="step.name" class="w-full h-full object-cover" loading="lazy">
+            </div>
+          </div>
+        }
+      </div>
+    </details>
+
+    <!-- Fluid Responsive Exercise Cards Grid (1, 2, or 3 based on space) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      @for (ex of workoutService.filteredExercises(); track ex.id) {
+        <div class="bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-2xl overflow-hidden shadow-lg transition flex flex-col justify-between">
+          
+          <div class="p-5">
+            <!-- Header: Sequence + Name + Target Badge -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <div>
+                <span class="inline-block bg-amber-500 text-black font-extrabold text-[10px] px-2 py-0.5 rounded shadow mb-1">
+                  {{ ex.seq }}
+                </span>
+                <h3 class="text-base sm:text-lg font-bold text-white leading-tight">{{ ex.name }}</h3>
+              </div>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap {{ ex.badgeColor }}">
+                {{ ex.portionBadge }}
+              </span>
+            </div>
+
+            <!-- Two-Step Real People Photos (Start vs Peak Squeeze) -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-950/90 rounded-xl p-2.5 border border-slate-800/80 my-3">
+              <!-- Step 1: Start -->
+              <div class="flex flex-col items-center">
+                <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase mb-1 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                  {{ ex.step1Name }}
+                </span>
+                <div class="w-full bg-slate-900 rounded-lg overflow-hidden border border-slate-800/80 h-32 sm:h-36 flex items-center justify-center">
+                  <img [src]="ex.step1Img" [alt]="ex.name + ' - ' + ex.step1Name" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200" loading="lazy">
+                </div>
+              </div>
+
+              <!-- Step 2: Peak Squeeze -->
+              <div class="flex flex-col items-center">
+                <span class="text-[10px] font-bold text-amber-400 tracking-wider uppercase mb-1 flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  {{ ex.step2Name }}
+                </span>
+                <div class="w-full bg-slate-900 rounded-lg overflow-hidden border border-amber-500/30 h-32 sm:h-36 flex items-center justify-center">
+                  <img [src]="ex.step2Img" [alt]="ex.name + ' - ' + ex.step2Name" class="w-full h-full object-cover hover:scale-105 transition-transform duration-200" loading="lazy">
+                </div>
+              </div>
+            </div>
+
+            <!-- Why This Movement -->
+            <p class="text-[11px] text-slate-300 font-medium mb-3 bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/60 leading-relaxed">
+              <strong class="text-amber-400">Goal:</strong> {{ ex.why }}
+            </p>
+
+            <!-- Form Cues -->
+            <div>
+              <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block mb-1">Execution Cues:</span>
+              <ul class="text-[11px] text-slate-300 space-y-1 list-disc list-inside">
+                @for (cue of ex.cues; track cue) {
+                  <li [innerHTML]="cue"></li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          <!-- Bottom Volume Strip -->
+          <div class="p-3 bg-slate-950/70 border-t border-slate-800/90 flex items-center justify-between text-xs">
+            <span class="font-bold text-amber-400 uppercase tracking-wide flex items-center gap-1 text-[11px]">
+              <span>🎯</span> Volume:
+            </span>
+            <span class="font-mono text-slate-300 font-semibold text-[11px] bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 rounded">
+              {{ ex.volume }}
+            </span>
+          </div>
+
+        </div>
+      } @empty {
+        <div class="col-span-full text-center py-12 bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <span class="text-3xl mb-2 block">🔍</span>
+          <p class="text-slate-300 font-bold text-sm">No exercises match filter</p>
+          <button (click)="filterPortion('all')" class="mt-3 px-3 py-1.5 rounded-lg text-xs bg-amber-500 text-black font-semibold">Reset to All</button>
+        </div>
+      }
+    </div>
+
+    <!-- Cooldown Accordion Section with Real People Images -->
+    <details class="group mt-8 bg-slate-900/80 border border-slate-800/90 rounded-2xl p-4 shadow-sm transition" open>
+      <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+          <span class="font-extrabold text-xs uppercase tracking-wider text-cyan-400">{{ data.cooldown.title }}</span>
+        </div>
+        <span class="text-xs text-cyan-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 pt-3 border-t border-slate-800">
+        @for (step of data.cooldown.steps; track step.code) {
+          <div class="bg-slate-950/70 border border-slate-800/90 rounded-xl p-3 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span class="w-5 h-5 rounded bg-cyan-500/20 text-cyan-400 text-[11px] flex items-center justify-center font-black">{{ step.code }}</span>
+                  {{ step.name }}
+                </span>
+                <span class="text-[11px] text-cyan-400 font-mono font-bold">{{ step.time }}</span>
+              </div>
+              <span class="inline-block text-[10px] text-cyan-300 font-semibold bg-cyan-950/50 border border-cyan-800/40 px-2 py-0.5 rounded mb-1">
+                {{ step.badge }}
+              </span>
+              <p class="text-[11px] text-slate-400 leading-relaxed">{{ step.desc }}</p>
+            </div>
+            <!-- Real Person Cooldown Photo -->
+            <div class="w-full h-32 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center mt-2.5">
+              <img [src]="step.img" [alt]="step.name" class="w-full h-full object-cover" loading="lazy">
+            </div>
+          </div>
+        }
+      </div>
+    </details>
+
+  }
+
+</main>
